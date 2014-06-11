@@ -106,7 +106,7 @@ public class Utilities {
    }
    
    private void addFinalResults(Statement s, int score, Round_Details_List detail_list) {
-      Stats stats = new Stats(score, detail_list);
+      Stats stats = new Stats(score, detail_list).compute();
       
       Result res = new Result();
       
