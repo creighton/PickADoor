@@ -42,7 +42,7 @@ public class Utilities {
       started.setDisplay(starteddisplay);
       
       stopped = new Verb();
-      stopped.setId("http://tom.example.com/xapi/verbs/started");
+      stopped.setId("http://tom.example.com/xapi/verbs/stopped");
       HashMap<String, String> stoppeddisplay = new HashMap<String, String>();
       stoppeddisplay.put("en-US", "stopped");
       stopped.setDisplay(stoppeddisplay);
