@@ -21,4 +21,6 @@
     <string name="left_door_count">Left Door was Correct:</string>
     <string name="middle_door_count">Middle Door was Correct:</string>
     <string name="right_door_count">Right Door was Correct:</string>
+    <string name="player_name_txt">Player Name</string>
+    <string name="player_mbox_txt">Player Email (fake is ok)</string>
 </resources>

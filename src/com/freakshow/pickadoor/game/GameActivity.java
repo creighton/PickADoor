@@ -1,12 +1,19 @@
 package com.freakshow.pickadoor.game;
 
+import gov.adlnet.xapi.client.StatementClient;
+import gov.adlnet.xapi.model.Agent;
+
+import java.net.MalformedURLException;
 import java.util.Random;
+import java.util.UUID;
 
 import com.freakshow.pickadoor.R;
+import com.freakshow.pickadoor.Start;
 import com.freakshow.pickadoor.game.extras.Round_Details;
 import com.freakshow.pickadoor.game.extras.Round_Details_List;
 import com.freakshow.pickadoor.game.extras.StatsActivity;
 import com.freakshow.pickadoor.game.parts.Round;
+import com.freakshow.pickadoor.xapi.Utilities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +36,11 @@ public class GameActivity extends Activity
    private Button quit_button;
    private Button next_button;
    private Button stats_button;
+   
+   //xapi
+   private static final String ACTIVITY_ID = "http://tom.example.com/xapi/games/PickADoor";
+   private StatementClient xapiclient;
+   private Utilities xapiutil;
    
    @Override
    protected void onCreate(Bundle savedInstanceState)
@@ -83,6 +95,33 @@ public class GameActivity extends Activity
             }
          }
       });
+      
+      // xapi
+      try {
+         xapiclient = new StatementClient("https://lrs.adlnet.gov/xapi/", "tom", "1234");
+      }
+      catch (MalformedURLException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      String agent_name = getIntent().getStringExtra(Start.NAME_KEY);
+      String agent_mbox = getIntent().getStringExtra(Start.MBOX_KEY);
+      Agent agent = null;
+      if (! ("".equals(agent_name) || "".equals(agent_mbox))) {
+         if (! agent_mbox.startsWith("mailto:"))
+            agent_mbox = "mailto:" + agent_mbox;
+         agent = new Agent();
+         agent.setName(agent_name);
+         agent.setMbox(agent_mbox);
+      }
+      xapiutil = new Utilities(xapiclient, agent, ACTIVITY_ID);
+   }
+   
+   protected void onStart()
+   {
+      super.onStart();
+      xapiutil.setRegistrationId(UUID.randomUUID().toString());
+      xapiutil.sendStartStatement();
    }
 
    @Override
@@ -115,6 +154,8 @@ public class GameActivity extends Activity
    protected void onStop()
    {
       super.onStop();
+      // send stop statement
+      xapiutil.sendStopStatement(score, rounds);
    }
    
    public Round getRound()
@@ -142,7 +183,12 @@ public class GameActivity extends Activity
 
    public void roundFinished()
    {
-      if (current_round.getDetails().success)incrementScore();
+      Round_Details details = current_round.getDetails();
+      if (details.success)incrementScore();
+      // get data from current round
+      // create statement, add score 
+      int round = rounds.size() + 1;
+      xapiutil.sendRoundFinished(ACTIVITY_ID+"/round/"+round, round, details);
    }
 
    private void incrementScore()
