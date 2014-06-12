@@ -155,6 +155,7 @@ public class GameActivity extends Activity
    {
       super.onStop();
       // send stop statement
+      store();
       xapiutil.sendStopStatement(score, rounds);
    }
    
