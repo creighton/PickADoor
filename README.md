@@ -1,6 +1,9 @@
 [PickADoor](http://creighton.github.io/PickADoor)
 =========
 
+ADL Demo resources: [resources](https://drive.google.com/a/adlnet.gov/?tab=mo#folders/0B7Cy_QOGO8g-S0ZsVmowYmFEakU)
+
+
 Monty Hall like app
 
 ## Playing
